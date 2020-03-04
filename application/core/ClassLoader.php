@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * 【共通】オートロードクラス
+ * 
+ * オートロードに関する処理をまとめたクラス。
+ * オートロードの対象となるクラスのルール
+ * クラスは「クラス名.php」というファイル名で保存
+ * クラスはcoreディレクトリ、modelディレクトリに配置
+ * 
+ * @access public
+ * @category Common
+ * @package ClassLoader
+ */
 class ClassLoader
 {
     protected $dirs;
@@ -20,7 +31,7 @@ class ClassLoader
             $file = $dir . '/' . $class . '.php';
             if (is_readable($file)) {
                 require $file;
-                
+
                 return;
             }
         }
