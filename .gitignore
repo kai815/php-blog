@@ -1,0 +1,2 @@
+# 「.htaccess」と「.htpasswd」など、.ht で始まるファイルを追跡しない
+.ht*
