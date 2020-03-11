@@ -1,12 +1,12 @@
 <?php
 /**
  * 【共通】オートロードクラス
- * 
+ *
  * オートロードに関する処理をまとめたクラス。
  * オートロードの対象となるクラスのルール
  * クラスは「クラス名.php」というファイル名で保存
  * クラスはcoreディレクトリ、modelディレクトリに配置
- * 
+ *
  * @access public
  * @category Common
  * @package ClassLoader
@@ -17,9 +17,9 @@ class ClassLoader
 
     /**
      * PHPをオートローダクラスに登録する
-     * 
+     *
      * loadClass()メソッドをオートロード時に呼び出されるように指定
-     * 
+     *
      * @access public
      */
     public function register()
@@ -29,11 +29,11 @@ class ClassLoader
 
     /**
      * オートロード時に探すディレクトリを追加する
-     * 
+     *
      * modelとcoreのクラスファイルも読み込むようにする
-     * 
+     *
      * @access public
-     * @param string $dir 
+     * @param string $dir
      * 　　　　オートロードの対象となるディレクトリ(フルパスで指定)
      */
     public function registerDir($dir)
@@ -43,7 +43,7 @@ class ClassLoader
 
     /**
      * クラスファイルの読み込みを行う
-     * 
+     *
      * $dirに指定されたディレクトリの中から「クラス名.php」を探して、
      * あったら読み込む。
      * @access public
