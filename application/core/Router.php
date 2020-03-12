@@ -5,6 +5,9 @@
  *
  * ルーティングの定義をまとめたクラス。
  * パスからコントローラーとアクションを特定する
+ *
+ * @category Common
+ * @package Router
  */
 
 class Router
