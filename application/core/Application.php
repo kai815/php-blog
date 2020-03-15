@@ -152,4 +152,73 @@ abstract class Application
     {
         return $this->getRootDir() . '/web';
     }
+
+    /**
+     * アクションの実行を行う
+     *
+     * ルーティングパラメータを受け取り、コントローラー名とアクション名を特定してrunAction()を実施
+     */
+    public function run()
+    {
+        $params = $this->router->resolve($this->request->getPathinfo());
+        if ($params === false) {
+            // todo-A
+        }
+
+        $controller = $param['controller'];
+        $action = $params['action'];
+
+        $this->runAction($controller, $action, $params);
+
+        $this->response->send();
+    }
+
+    /**
+     * 実際にアクションを実行する
+     *
+     * コントローラのクラス名にはControllerをつける
+     *
+     * @param string $controller_name
+     * @param string $action
+     * @param array $params
+     */
+    public function runAction($controller_name, $action, $params = array())
+    {
+        $controller_class = ucfirst($controller_name) . 'Controller';
+
+        $controller = $this->findController($controller_class);
+        if ($controller === false) {
+            // todo-B
+        }
+
+        $content = $controller->run($action, $params);
+
+        $this->response->setContent($content);
+    }
+
+    /**
+     * コントローラクラスの読み込み
+     *
+     * コントローラクラスが読み込まれていない場合に行う
+     *
+     * @param string $controller_class
+     * @return void
+     */
+    protected function findController($controller_class)
+    {
+        if (!class_exists($controller_class)) {
+            $controller_file = $this->getControllerDir() . '/' . $controller_class . '.php';
+            if (!is_readable($controller_file)) {
+                return false;
+            } else {
+                require_once $controller_file;
+
+                if (!class_exists(($controller_class))) {
+                    return false;
+                }
+            }
+        }
+
+        return new $controller_class($this);
+    }
 }
