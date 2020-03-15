@@ -157,18 +157,25 @@ abstract class Application
      * アクションの実行を行う
      *
      * ルーティングパラメータを受け取り、コントローラー名とアクション名を特定してrunAction()を実施
+     * @throws HttpNotFoundException ルーティングにパスがなかった時に404を表示
      */
     public function run()
     {
-        $params = $this->router->resolve($this->request->getPathinfo());
-        if ($params === false) {
-            // todo-A
+        try {
+            $params = $this->router->resolve($this->request->getPathinfo());
+
+            if ($params === false) {
+
+                throw new HttpNotFoundException('No route found for ' . $this->request->getPathInfo());
+            }
+
+            $controller = $params['controller'];
+            $action = $params['action'];
+
+            $this->runAction($controller, $action, $params);
+        } catch (HttpNotFoundException $e) {
+            $this->render404Page($e);
         }
-
-        $controller = $param['controller'];
-        $action = $params['action'];
-
-        $this->runAction($controller, $action, $params);
 
         $this->response->send();
     }
@@ -181,6 +188,7 @@ abstract class Application
      * @param string $controller_name
      * @param string $action
      * @param array $params
+     * @throws HttpNotFoundException コントローラがなかった時に404を表示
      */
     public function runAction($controller_name, $action, $params = array())
     {
@@ -188,7 +196,8 @@ abstract class Application
 
         $controller = $this->findController($controller_class);
         if ($controller === false) {
-            // todo-B
+
+            throw new HttpNotFoundException($controller_class . ' controller is not found.');
         }
 
         $content = $controller->run($action, $params);
@@ -220,5 +229,29 @@ abstract class Application
         }
 
         return new $controller_class($this);
+    }
+
+    /**
+     * 404エラーのページを描画する処理
+     */
+    protected function render404Page($e)
+    {
+        $this->response->setStatusCode(404, 'Not Found');
+        $message = $this->isDebugMode() ? $e->getMessage() : 'Page not found.';
+        $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+
+        $this->reponse->setContent(<<<EOF
+<!DOCTYPE html PUBLIC "-//W#C//DTD XHTML 1.0 Transitionas//EN"http://w3.org/TR/xhtml1/DTD/xhtml1-trasitiona.dtd">
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>404</title>
+<head>
+</head>
+<body>
+    {$message}
+</body>
+</html>
+EOF
+        );
     }
 }
