@@ -78,11 +78,13 @@ class Session
      * ログイン状態の制御
      *
      * @param [type] $bool
-     * 
+     *
      */
     public function setAuthenticated($bool)
     {
         $this->set('_authenticated', (bool)$bool);
+
+        $this->regenarete();
     }
 
     /**
