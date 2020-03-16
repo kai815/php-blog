@@ -14,6 +14,7 @@ abstract class Controller
     protected $response;
     protected $session;
     protected $db_manager;
+    protected $auth_actions = array();
 
     /**
      * コントローラ名を取得し、Requestクラスなどのインスタンスをプロパティにセット
@@ -46,6 +47,10 @@ abstract class Controller
         $action_method = $action . 'Action';
         if (!method_exists($this, $action_method)) {
             $this->forward404();
+        }
+
+        if ($this->needsAuthentication($action) && !$this->session->isAuthenticated()) {
+            throw new UnauthorizedActionException();
         }
 
         $content = $this->$action_method($params);
@@ -111,7 +116,7 @@ abstract class Controller
 
     /**
      * トークンを生成し、セッションに格納する
-     * 
+     *
      * 複数画面に対応するために最大10個保持
      *
      * @param string $form_name
@@ -151,6 +156,22 @@ abstract class Controller
             unset($tokens[$pos]);
             $this->session->set($key, $tokens);
 
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 認証が必要なアクションかどうかの判定
+     *
+     * @param string $action
+     * @return boolean
+     */
+    protected function needsAuthentication($action)
+    {
+        if ($this->auth_actions === true
+        || (is_array($this->auth_actions) && in_array($action, $this->auth_actions))) {
             return true;
         }
 
