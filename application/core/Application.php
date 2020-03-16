@@ -241,7 +241,7 @@ abstract class Application
         $message = $this->isDebugMode() ? $e->getMessage() : 'Page not found.';
         $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
-        $this->reponse->setContent(<<<EOF
+        $this->response->setContent(<<<EOF
 <!DOCTYPE html PUBLIC "-//W#C//DTD XHTML 1.0 Transitionas//EN"http://w3.org/TR/xhtml1/DTD/xhtml1-trasitiona.dtd">
 <html>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
