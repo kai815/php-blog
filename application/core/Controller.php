@@ -108,4 +108,52 @@ abstract class Controller
         $this->response->setStatusCode(302, 'Found');
         $this->response->setHttpHeader('Location', $url);
     }
+
+    /**
+     * トークンを生成し、セッションに格納する
+     * 
+     * 複数画面に対応するために最大10個保持
+     *
+     * @param string $form_name
+     * @return string $token 生成されたトークン
+     */
+    protected function generateCsrfToken($form_name)
+    {
+        $key = 'csrf_tokens/' . $form_name;
+        $tokens = $this->session->get($key, array());
+        if (count($tokens) >= 10) {
+            array_shift($tokens);
+        }
+
+        $token = sha1($form_name . session_id() . microtime());
+        $tokens[] = $token;
+
+        $this->session->set($key, $tokens);
+
+        return $token;
+    }
+
+    /**
+     * セッション上に格納されたトークンからPOSTされたトークンを探す
+     *
+     * 一度使用したら削除
+     *
+     * @param string $form_name
+     * @param string $token
+     * @return boolean トークンが存在した場合にtrueを返す
+     */
+    protected function checkCsrfToken($form_name, $token)
+    {
+        $key = 'csrf_tokens/' . $form_name;
+        $tokens = $this->session->get($key, array());
+
+        if (false !== ($pos = array_search($token, $tokens, true))) {
+            unset($tokens[$pos]);
+            $this->session->set($key, $tokens);
+
+            return true;
+        }
+
+        return false;
+    }
 }
