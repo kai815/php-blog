@@ -11,7 +11,7 @@ class View
     public function __construct($base_dir, $defaults = array())
     {
         $this->base_dir = $base_dir;
-        $this->$defaults = $defaults;
+        $this->defaults = $defaults;
     }
 
     /**
