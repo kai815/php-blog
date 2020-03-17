@@ -31,7 +31,7 @@ class Router
         $routes = array();
 
         foreach ($definitions as $url => $params) {
-            $tokens = explode('/', ltrim($url));
+            $tokens = explode('/', ltrim($url, '/'));
             foreach ($tokens as $i => $token) {
                 if (0 === strpos($token, ':')) {
                     $name = substr($token, 1);
@@ -40,7 +40,7 @@ class Router
                 $tokens[$i] = $token;
             }
 
-            $pattern = '/'.implode('/', $tokens);
+            $pattern = '/' . implode('/', $tokens);
             $routes[$pattern] = $params;
         }
 

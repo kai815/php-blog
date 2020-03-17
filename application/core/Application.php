@@ -108,7 +108,7 @@ abstract class Application
      *
      * @return instance
      */
-    public function getDbManger()
+    public function getDbManager()
     {
         return $this->db_manager;
     }
