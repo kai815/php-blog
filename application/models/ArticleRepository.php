@@ -28,6 +28,8 @@ class ArticleRepository extends DbRepository
 
     /**
      * ログインユーザーに関連する投稿を取得
+     * 
+     * こっちはフォロー中のユーザーなどの投稿も取得予定
      *
      * @param integer $user_id
      * @return array
@@ -43,5 +45,46 @@ class ArticleRepository extends DbRepository
         ";
 
         return $this->fetchAll($sql, array(':user_id' => $user_id));
+    }
+
+    /**
+     * 特定のユーザの投稿を取得
+     *
+     * @param integer $user_id
+     * @return array
+     */
+    public function fetchAllbyUserId($user_id)
+    {
+        $sql = "
+            SELECT a.*, u.user_name
+            FROM article a
+                LEFT JOIN user u ON a.user_id = u.id
+            WHERE u.id = :user_id
+            ORDER BY a.created_at DESC
+        ";
+
+        return $this->fetchAll($sql, array(':user_id' => $user_id));
+    }
+    
+    /**
+     * 投稿IDとユーザ名に一致するレコードを1件取得
+     *
+     * @param integer $id
+     * @param string $user_name
+     */
+    public function fetchByIdAndUserName($id, $user_name)
+    {
+        $sql = "
+            SELECT a.*, u.user_name
+                FROM article a
+                    LEFT JOIN user u ON u.id = a.user_id
+                WHERE a.id = :id
+                    AND u.user_name = :user_name
+        ";
+
+        return $this->fetch($sql, array(
+            ':id' => $id,
+            ':user_name' => $user_name,
+        ));
     }
 }

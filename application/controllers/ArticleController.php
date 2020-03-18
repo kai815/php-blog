@@ -61,4 +61,37 @@ class ArticleController extends Controller
             '_token'    => $this->generateCsrfToken('article/post'),
         ), 'index');
     }
+
+    /**
+     * ユーザーの投稿一覧アクション
+     *
+     * @param array $params
+     * @return void
+     */
+    public function userAction($params)
+    {
+        $user = $this->db_manager->get('User')->fetchByUserName($params['user_name']);
+
+        if (!$user) {
+            $this->forward404();
+        }
+
+        $articles = $this->db_manager->get('Article')->fetchAllByUserId($user['id']);
+
+        return $this->render(array(
+            'user'    => $user,
+            'articles'=> $articles,
+        ));
+    }
+
+    public function showAction($params)
+    {
+        $article = $this->db_manager->get('Article')->fetchByIdAndUserName($params['id'], $params['user_name']);
+
+        if (!$article) {
+            $this->forward404();
+        }
+
+        return $this->render(array('article' => $article));
+    }
 }
