@@ -27,6 +27,10 @@ class MiniBlogApplication extends Application
     protected function registerRoutes()
     {
         return array(
+            '/'
+                => array('controller' => 'article', 'action' => 'index'),
+            '/article/post'
+                => array('controller' => 'article', 'action' => 'post'),
             '/account'
                 => array('controller' => 'account', 'action' => 'index'),
             '/account/:action'

@@ -103,7 +103,7 @@ abstract class Controller
     protected function redirect($url)
     {
         if (!preg_match('#https://#', $url)) {
-            $protocol = $this->request->isSsl ? 'https://' : 'http://';
+            $protocol = $this->request->isSsl() ? 'https://' : 'http://';
             $host = $this->request->getHost();
             $base_url = $this->request->getBaseUrl();
 
