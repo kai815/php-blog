@@ -5,6 +5,8 @@
 
 class ArticleController extends Controller
 {
+    protected $auth_actions = array('index', 'post');
+
     /**
      * 投稿一覧を表示するアクション
      *
